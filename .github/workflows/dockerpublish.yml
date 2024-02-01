@@ -27,7 +27,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            yifans/php-workspace
+            yifans/hadoop
           flavor: |
             suffix=-${{ matrix.version }}
           tags: |
