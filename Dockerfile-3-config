@@ -66,31 +66,31 @@ RUN chown -R hadoop:hadoop $ZEPPELIN_HOME
 ENV PATH=$PATH:$JAVA_HOME/bin:/usr/local/hadoop/bin:/usr/local/hadoop/sbin:$SCALA_HOME/bin:$SPARK_HOME/bin:$ZEPPELIN_HOME/bin
 RUN echo "PATH=$PATH:$JAVA_HOME/bin:/usr/local/hadoop/bin:/usr/local/hadoop/sbin:$SCALA_HOME/bin:$SPARK_HOME/bin" >> /home/hadoop/.bashrc
 
-# # Hadoop configuration
-# COPY config/sshd_config /etc/ssh/sshd_config
-# COPY config/ssh_config /home/hadoop/.ssh/config
-# COPY config/hadoop-env.sh config/hdfs-site.xml config/hdfs-site.xml config/core-site.xml \
-#      config/core-site.xml config/mapred-site.xml config/yarn-site.xml config/yarn-site.xml \
-#      $HADOOP_CONF_DIR/
+# Hadoop configuration
+COPY config/sshd_config /etc/ssh/sshd_config
+COPY config/ssh_config /home/hadoop/.ssh/config
+COPY config/hadoop-env.sh config/hdfs-site.xml config/hdfs-site.xml config/core-site.xml \
+     config/core-site.xml config/mapred-site.xml config/yarn-site.xml config/yarn-site.xml \
+     $HADOOP_CONF_DIR/
 
-# # Adding initialisation scripts
-# RUN mkdir $HADOOP_HOME/bin/init
-# COPY init-scripts/init-hadoop.sh $HADOOP_HOME/bin/init/
-# COPY init-scripts/start-hadoop.sh init-scripts/stop-hadoop.sh $HADOOP_HOME/bin/init/
-# COPY init-scripts/hadoop /etc/init.d/
+# Adding initialisation scripts
+RUN mkdir $HADOOP_HOME/bin/init
+COPY init-scripts/init-hadoop.sh $HADOOP_HOME/bin/init/
+COPY init-scripts/start-hadoop.sh init-scripts/stop-hadoop.sh $HADOOP_HOME/bin/init/
+COPY init-scripts/hadoop /etc/init.d/
 
-# # Adding utilities
-# RUN mkdir -p /home/hadoop/utils
-# COPY utils/run-wordcount.sh utils/format-namenode.sh /home/hadoop/utils/
+# Adding utilities
+RUN mkdir -p /home/hadoop/utils
+COPY utils/run-wordcount.sh utils/format-namenode.sh /home/hadoop/utils/
 
-# # Replacing Hadoop slave file with provided one and changing logs directory
-# RUN rm $HADOOP_CONF_DIR/slaves
-# RUN ln -s /config/slaves $HADOOP_CONF_DIR/slaves
+# Replacing Hadoop slave file with provided one and changing logs directory
+RUN rm $HADOOP_CONF_DIR/slaves
+RUN ln -s /config/slaves $HADOOP_CONF_DIR/slaves
 
-# # Setting up log directories
-# RUN ln -s /data/logs/hadoop $HADOOP_HOME/logs
-# RUN ln -s $HADOOP_HOME/logs /var/log/hadoop
-# RUN ln -s $ZEPPELIN_HOME/logs /var/log/zeppelin
+# Setting up log directories
+RUN ln -s /data/logs/hadoop $HADOOP_HOME/logs
+RUN ln -s $HADOOP_HOME/logs /var/log/hadoop
+RUN ln -s $ZEPPELIN_HOME/logs /var/log/zeppelin
 
 # Set permissions on Hadoop home
 RUN chown -R hadoop:hadoop $HADOOP_HOME
